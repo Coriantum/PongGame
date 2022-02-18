@@ -18,8 +18,13 @@ public class Ball : MonoBehaviour
 
     [SerializeField] private Text resultado;
 
+    [SerializeField] private Text temporizador;
+
     AudioSource fuenteDeAudio;
     [SerializeField] private AudioClip audioGol, audioRaqueta, audioRebote;
+
+    //Variable para contabilizar el tiempo
+    private float tiempo = 180;
 
 
 
@@ -41,6 +46,26 @@ public class Ball : MonoBehaviour
 
     private void Update() {
         speed += 2 * Time.deltaTime;
+
+        //Si aún no se ha acabado el tiempo, decremento su valor y lo muestro en la caja de texto
+        if(tiempo >= 0){
+            tiempo -= Time.deltaTime;
+            temporizador.text = FormatearTiempo(tiempo);
+
+        //Si se ha acabado el tiempo, compruebo quién ha ganado y se acaba el juego
+        }else{
+            temporizador.text = "00:00";
+            if(golesDerecha > golesIzquierda){
+                resultado.text = "Jugador Derecha gana!\n pulsa I para volver a Inicio\n pulsa P para volver a jugar";
+            }else if(golesIzquierda > golesDerecha){
+                resultado.text = "Jugador Izquierda gana!\n pulsa I para volver a Inicio\n pulsa P para volver a jugar";
+            }else{
+                resultado.text = "Empate!!\n pulsa I para volver a Inicio\n pulsa P para volver a jugar ";
+            }
+        
+            resultado.enabled = true;
+            Time.timeScale = 0;
+        }
     }
 
 
@@ -133,5 +158,12 @@ public class Ball : MonoBehaviour
         }else{
             return false;
         }
+    }
+
+    private string FormatearTiempo(float tiempo){
+        string minutos= Mathf.Floor(tiempo/60).ToString("00");
+        string segundos = Mathf.Floor(tiempo % 60).ToString("00");
+
+        return minutos + ":" + segundos;
     }
 }
